@@ -5,6 +5,8 @@ as for taking breaks or other alerts.
 
 It currently works on Sway 1.0.
 
+![Image of waytext](screenshots/waytext.png)
+
 ## Usage
 
 ```sh
