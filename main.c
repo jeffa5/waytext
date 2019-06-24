@@ -67,7 +67,7 @@ static void keyboard_handle_key(void *data, struct wl_keyboard *wl_keyboard,
                                 uint32_t key_state) {
   struct waytext_seat *seat = data;
   struct waytext_state *state = seat->state;
-  if (key_state == WL_KEYBOARD_KEY_STATE_PRESSED) {
+  if (key_state == WL_KEYBOARD_KEY_STATE_RELEASED) {
     if (key == KEY_ESC) {
       state->running = false;
     }
