@@ -9,58 +9,44 @@
     };
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem
-      (system:
-        let
-          pkgs = import nixpkgs {
-            system = system;
-          };
-        in
-        rec
-        {
-          packages = {
-            waytext = pkgs.stdenv.mkDerivation {
-              name = "waytext";
-              src = ./.;
-              buildInputs = with pkgs; [
-                meson
-                pkgconfig
-                cmake
-                cairo
-                wayland
-                wayland-protocols
-                scdoc
-                ninja
-              ];
-            };
-          };
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+  }: let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs {
+      inherit system;
+    };
+  in rec
+  {
+    packages.${system} = {
+      waytext = pkgs.stdenv.mkDerivation {
+        name = "waytext";
+        src = ./.;
+        buildInputs = with pkgs; [
+          meson
+          pkgconfig
+          cmake
+          cairo
+          wayland
+          wayland-protocols
+          scdoc
+          ninja
+        ];
+      };
+    };
 
-          defaultPackage = packages.waytext;
+    apps.${system} = {
+      waytext = flake-utils.lib.mkApp {
+        drv = packages.${system}.waytext;
+      };
+    };
 
-          apps = {
-            waytext = flake-utils.lib.mkApp {
-              drv = packages.waytext;
-            };
-          };
+    overlays.default = final: _prev: self.packages.${system};
 
-          defaultApp = apps.waytext;
-
-          devShell = pkgs.mkShell {
-            buildInputs = with pkgs;[
-              meson
-              pkgconfig
-              cmake
-              cairo
-              wayland
-              wayland-protocols
-              scdoc
-              ninja
-
-              rnix-lsp
-              nixpkgs-fmt
-            ];
-          };
-        }
-      );
+    devShells.${system}.default = pkgs.mkShell {
+      inputsFrom = [self.packages.${system}.waytext];
+    };
+  };
 }
