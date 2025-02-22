@@ -5,7 +5,6 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils = {
       url = "github:numtide/flake-utils";
-      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
@@ -26,11 +25,12 @@
         src = ./.;
         buildInputs = with pkgs; [
           meson
-          pkgconfig
+          pkg-config
           cmake
           cairo
           wayland
           wayland-protocols
+          wayland-scanner
           scdoc
           ninja
         ];
