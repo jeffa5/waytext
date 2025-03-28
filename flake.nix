@@ -38,10 +38,11 @@
         };
       };
 
-      overlays.default = final: _prev: self.packages.${system};
-
       devShells.default = pkgs.mkShell {
         inputsFrom = [self.packages.${system}.waytext];
       };
-    });
+    })
+    // {
+      overlays.default = final: _prev: self.packages;
+    };
 }
