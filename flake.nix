@@ -15,21 +15,7 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       packages = {
-        waytext = pkgs.stdenv.mkDerivation {
-          name = "waytext";
-          src = ./.;
-          buildInputs = with pkgs; [
-            meson
-            pkg-config
-            cmake
-            cairo
-            wayland
-            wayland-protocols
-            wayland-scanner
-            scdoc
-            ninja
-          ];
-        };
+        waytext = pkgs.callPackage ./nix/waytext.nix {};
       };
 
       apps = {
@@ -38,11 +24,15 @@
         };
       };
 
+      formatter = pkgs.alejandra;
+
       devShells.default = pkgs.mkShell {
         inputsFrom = [self.packages.${system}.waytext];
       };
     })
     // {
-      overlays.default = final: _prev: self.packages;
+      overlays.default = final: _prev: {
+        waytext = final.callPackage ./nix/waytext.nix {};
+      };
     };
 }
