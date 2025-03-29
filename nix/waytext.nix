@@ -1,7 +1,7 @@
 {pkgs}:
 pkgs.stdenv.mkDerivation {
   name = "waytext";
-  src = ./.;
+  src = ./..;
   buildInputs = with pkgs; [
     meson
     pkg-config
